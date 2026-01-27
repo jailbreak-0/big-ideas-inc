@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Product } from '../../../types';
 import { MOCK_PRODUCTS } from '../../../constants';
 import { useCart } from '../../../context/CartContext';
+import { formatPrice } from '../../../lib/utils';
 
 const ProductDetailPage: React.FC = () => {
     const { addToCart } = useCart();
@@ -59,8 +60,8 @@ const ProductDetailPage: React.FC = () => {
 
                     <div className="p-6 bg-white dark:bg-white/5 rounded-2xl border border-[#e6f4f4] dark:border-white/10 shadow-sm">
                         <div className="flex items-end gap-3 mb-2">
-                            <span className="text-4xl font-black text-primary">${product.price}</span>
-                            {product.oldPrice && <span className="text-lg text-gray-400 line-through mb-1">${product.oldPrice}</span>}
+                            <span className="text-4xl font-black text-primary">{formatPrice(product.price)}</span>
+                            {product.oldPrice && <span className="text-lg text-gray-400 line-through mb-1">{formatPrice(product.oldPrice)}</span>}
                         </div>
                         <div className="flex items-center gap-2 text-green-600 dark:text-green-400 text-sm font-bold mb-6">
                             <span className="material-symbols-outlined text-[18px]">check_circle</span>

@@ -1,14 +1,40 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '../../hooks/useAuth';
 import { MOCK_ORDERS } from '../../constants';
 
 const DashboardPage: React.FC = () => {
+    const { user, loading } = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!loading && !user) {
+            router.push('/login');
+        }
+    }, [user, loading, router]);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center space-y-4">
+                    <span className="material-symbols-outlined text-6xl text-primary animate-spin">progress_activity</span>
+                    <p className="text-slate-600 dark:text-slate-400">Loading your dashboard...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!user) {
+        return null;
+    }
+
     return (
-        <div className="max-w-[1440px] mx-auto p-8 flex gap-8">
+        <div className="max-w-7xl mx-auto p-8 flex gap-8">
             {/* Sidebar Navigation */}
-            <aside className="w-64 flex-shrink-0 hidden lg:flex flex-col gap-8">
+            <aside className="w-64 shrink-0 hidden lg:flex flex-col gap-8">
                 <nav className="space-y-2">
                     <div className="flex items-center gap-3 p-3 rounded-xl bg-primary text-white shadow-lg shadow-primary/20">
                         <span className="material-symbols-outlined">dashboard</span>
@@ -28,15 +54,22 @@ const DashboardPage: React.FC = () => {
                     </Link>
                 </nav>
                 <div className="p-4 bg-primary/5 rounded-xl border border-primary/20">
-                    <p className="text-xs font-bold text-primary mb-1 uppercase tracking-wider">Pro Member</p>
-                    <p className="text-[11px] text-slate-500 mb-3 leading-tight">Enjoy free shipping & exclusive repair discounts.</p>
-                    <button className="w-full py-2 bg-primary text-white text-xs font-bold rounded-lg">Upgrade</button>
+                    <div className="flex items-center gap-3 mb-3">
+                        <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold text-xl">
+                            {user.email?.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-sm font-bold truncate">{user.email}</p>
+                            <p className="text-xs text-slate-500">Member</p>
+                        </div>
+                    </div>
+                    <p className="text-xs text-slate-500 mb-3 leading-tight">Enjoy exclusive member benefits and discounts.</p>
                 </div>
             </aside>
 
             <div className="flex-1">
                 <div className="mb-8">
-                    <h1 className="text-2xl font-extrabold tracking-tight">Welcome back, Alex</h1>
+                    <h1 className="text-2xl font-extrabold tracking-tight">Welcome back, {user.user_metadata?.display_name || user.email?.split('@')[0]}</h1>
                     <p className="text-gray-500">You have {MOCK_ORDERS.length} items arriving this week. Keep shredding!</p>
                 </div>
 
@@ -44,13 +77,13 @@ const DashboardPage: React.FC = () => {
                     <div className="bg-white p-6 rounded-2xl border border-slate-100 flex items-center justify-between shadow-sm">
                         <div>
                             <p className="text-sm font-medium text-gray-500 mb-1">Total Orders</p>
-                            <p className="text-3xl font-extrabold">{MOCK_ORDERS.length}</p>
+                            <p className="text-3xl font-extrabold text-primary">{MOCK_ORDERS.length}</p>
                         </div>
                         <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                             <span className="material-symbols-outlined">receipt_long</span>
                         </div>
                     </div>
-                    <div className="bg-white p-6 rounded-2xl border border-slate-100 flex items-center justify-between shadow-sm">
+                    {/* <div className="bg-white p-6 rounded-2xl border border-slate-100 flex items-center justify-between shadow-sm">
                         <div>
                             <p className="text-sm font-medium text-gray-500 mb-1">Active Warranties</p>
                             <p className="text-3xl font-extrabold">{MOCK_ORDERS.length}</p>
@@ -58,7 +91,7 @@ const DashboardPage: React.FC = () => {
                         <div className="size-12 rounded-xl bg-green-50 flex items-center justify-center text-green-600">
                             <span className="material-symbols-outlined">verified</span>
                         </div>
-                    </div>
+                    </div> */}
                     {/* <div className="bg-white p-6 rounded-2xl border border-slate-100 flex items-center justify-between shadow-sm">
                         <div>
                             <p className="text-sm font-medium text-gray-500 mb-1">Gear Points</p>
@@ -78,14 +111,14 @@ const DashboardPage: React.FC = () => {
                     <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
                         <table className="w-full text-left">
                             <thead>
-                                <tr className="bg-slate-50 border-b">
+                                <tr className="bg-slate-50 border-b text-gray-500">
                                     <th className="px-6 py-4 text-xs font-bold uppercase">Order</th>
                                     <th className="px-6 py-4 text-xs font-bold uppercase">Product</th>
                                     <th className="px-6 py-4 text-xs font-bold uppercase">Status</th>
                                     {/* <th className="px-6 py-4 text-xs font-bold uppercase text-right">Action</th> */}
                                 </tr>
                             </thead>
-                            <tbody className="divide-y">
+                            <tbody className="divide-y text-primary">
                                 {MOCK_ORDERS.map(order => (
                                     <tr key={order.id}>
                                         <td className="px-6 py-4">

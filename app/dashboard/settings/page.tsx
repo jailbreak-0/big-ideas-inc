@@ -1,41 +1,136 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '../../../hooks/useAuth';
+import { createClient } from '../../../lib/supabase/client';
 
-const SettingsPage: React.FC = () => {
-    const [formData, setFormData] = useState({
-        name: 'Alex Johnson',
-        email: 'alex@example.com',
-        phone: '+1 (555) 123-4567',
-        address: '123 Music Lane',
-        city: 'Nashville',
-        state: 'TN',
-        zip: '37201',
-        notifications: true,
-        newsletter: true,
-    });
+export default function SettingsPageNew() {
+    const { user, loading: authLoading } = useAuth();
+    const router = useRouter();
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState({ type: '', text: '' });
 
-    const handleSubmit = (e: React.FormEvent) => {
+    useEffect(() => {
+        if (!authLoading && !user) {
+            router.push('/login');
+        }
+        if (user) {
+            setEmail(user.email || '');
+            setUsername(user.user_metadata?.display_name || '');
+        }
+    }, [user, authLoading, router]);
+
+    const handleUpdateUsername = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Handle form submission
-        alert('Settings saved successfully!');
+        setLoading(true);
+        setMessage({ type: '', text: '' });
+
+        try {
+            const supabase = createClient();
+            const { error } = await supabase.auth.updateUser({
+                data: { display_name: username }
+            });
+            
+            if (error) {
+                setMessage({ type: 'error', text: error.message });
+            } else {
+                setMessage({ type: 'success', text: 'Username updated successfully' });
+            }
+        } catch (err) {
+            setMessage({ type: 'error', text: 'An unexpected error occurred' });
+        } finally {
+            setLoading(false);
+        }
     };
 
+    const handleUpdateEmail = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        setMessage({ type: '', text: '' });
+
+        try {
+            const supabase = createClient();
+            const { error } = await supabase.auth.updateUser({ email });
+            
+            if (error) {
+                setMessage({ type: 'error', text: error.message });
+            } else {
+                setMessage({ type: 'success', text: 'Check your new email to confirm the change' });
+            }
+        } catch (err) {
+            setMessage({ type: 'error', text: 'An unexpected error occurred' });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleUpdatePassword = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setMessage({ type: '', text: '' });
+
+        if (newPassword.length < 6) {
+            setMessage({ type: 'error', text: 'Password must be at least 6 characters' });
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            setMessage({ type: 'error', text: 'Passwords do not match' });
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const supabase = createClient();
+            const { error } = await supabase.auth.updateUser({ password: newPassword });
+            
+            if (error) {
+                setMessage({ type: 'error', text: error.message });
+            } else {
+                setMessage({ type: 'success', text: 'Password updated successfully' });
+                setNewPassword('');
+                setConfirmPassword('');
+            }
+        } catch (err) {
+            setMessage({ type: 'error', text: 'An unexpected error occurred' });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (authLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center space-y-4">
+                    <span className="material-symbols-outlined text-6xl text-primary animate-spin">progress_activity</span>
+                    <p className="text-slate-600 dark:text-slate-400">Loading settings...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!user) return null;
+
     return (
-        <div className="max-w-[1440px] mx-auto p-8 flex gap-8">
-            {/* Sidebar Navigation */}
-            <aside className="w-64 flex-shrink-0 hidden lg:flex flex-col gap-8">
+        <div className="max-w-7xl mx-auto p-8 flex gap-8">
+            {/* Sidebar */}
+            <aside className="w-64 shrink-0 hidden lg:flex flex-col gap-8">
                 <nav className="space-y-2">
-                    <Link href="/dashboard" className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 transition-colors group cursor-pointer">
+                    <Link href="/dashboard" className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 transition-colors group">
                         <span className="material-symbols-outlined text-gray-400 group-hover:text-primary">dashboard</span>
                         <span className="font-medium text-sm">Dashboard</span>
                     </Link>
-                    <Link href="/dashboard/orders" className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 transition-colors group cursor-pointer">
+                    <Link href="/dashboard/orders" className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 transition-colors group">
                         <span className="material-symbols-outlined text-gray-400 group-hover:text-primary">receipt_long</span>
                         <span className="font-medium text-sm">Order History</span>
                     </Link>
-                    <Link href="/dashboard/wishlist" className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 transition-colors group cursor-pointer">
+                    <Link href="/dashboard/wishlist" className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 transition-colors group">
                         <span className="material-symbols-outlined text-gray-400 group-hover:text-primary">favorite</span>
                         <span className="font-medium text-sm">Wishlist</span>
                     </Link>
@@ -45,150 +140,135 @@ const SettingsPage: React.FC = () => {
                     </div>
                 </nav>
                 <div className="p-4 bg-primary/5 rounded-xl border border-primary/20">
-                    <p className="text-xs font-bold text-primary mb-1 uppercase tracking-wider">Pro Member</p>
-                    <p className="text-[11px] text-slate-500 mb-3 leading-tight">Enjoy free shipping & exclusive repair discounts.</p>
-                    <button className="w-full py-2 bg-primary text-white text-xs font-bold rounded-lg">Upgrade</button>
+                    <div className="flex items-center gap-3 mb-3">
+                        <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold text-xl">
+                            {(user.user_metadata?.display_name || user.email)?.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-sm font-bold truncate">{user.user_metadata?.display_name || user.email?.split('@')[0]}</p>
+                            <p className="text-xs text-slate-500">Member</p>
+                        </div>
+                    </div>
                 </div>
             </aside>
 
+            {/* Main Content */}
             <div className="flex-1 max-w-3xl">
                 <div className="mb-8">
                     <h1 className="text-3xl font-extrabold tracking-tight mb-2">Account Settings</h1>
-                    <p className="text-gray-500">Manage your account information and preferences</p>
+                    <p className="text-gray-500">Manage your account security and preferences</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-8">
-                    {/* Personal Information */}
-                    <div className="bg-white rounded-2xl border border-slate-100 p-8 shadow-sm">
-                        <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-                            <span className="material-symbols-outlined text-primary">person</span>
-                            Personal Information
-                        </h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label className="block text-sm font-semibold mb-2">Full Name</label>
-                                <input
-                                    type="text"
-                                    placeholder={formData.name}
-                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    className="w-full rounded-lg border-slate-200 p-3 bg-slate-50"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-semibold mb-2">Email</label>
-                                <input
-                                    type="email"
-                                    placeholder={formData.email}
-                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                    className="w-full rounded-lg border-slate-200 p-3 bg-slate-50"
-                                />
-                            </div>
-                            <div className="md:col-span-2">
-                                <label className="block text-sm font-semibold mb-2">Phone Number</label>
-                                <input
-                                    type="tel"
-                                    placeholder={formData.phone}
-                                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                    className="w-full rounded-lg border-slate-200 p-3 bg-slate-50"
-                                />
-                            </div>
-                        </div>
+                {message.text && (
+                    <div className={`mb-6 p-4 rounded-lg flex items-start gap-2 ${
+                        message.type === 'success' 
+                            ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200' 
+                            : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200'
+                    }`}>
+                        <span className="material-symbols-outlined text-lg">
+                            {message.type === 'success' ? 'check_circle' : 'error'}
+                        </span>
+                        <span className="text-sm">{message.text}</span>
                     </div>
+                )}
 
-                    {/* Shipping Address */}
-                    <div className="bg-white rounded-2xl border border-slate-100 p-8 shadow-sm">
-                        <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-                            <span className="material-symbols-outlined text-primary">location_on</span>
-                            Shipping Address
-                        </h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="md:col-span-2">
-                                <label className="block text-sm font-semibold mb-2">Street Address</label>
-                                <input
-                                    type="text"
-                                    placeholder={formData.address}
-                                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                                    className="w-full rounded-lg border-slate-200 p-3 bg-slate-50"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-semibold mb-2">City</label>
-                                <input
-                                    type="text"
-                                    placeholder={formData.city}
-                                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                                    className="w-full rounded-lg border-slate-200 p-3 bg-slate-50"
-                                />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-sm font-semibold mb-2">State</label>
-                                    <input
-                                        type="text"
-                                        placeholder={formData.state}
-                                        onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                                        className="w-full rounded-lg border-slate-200 p-3 bg-slate-50"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-semibold mb-2">ZIP Code</label>
-                                    <input
-                                        type="text"
-                                        placeholder={formData.zip}
-                                        onChange={(e) => setFormData({ ...formData, zip: e.target.value })}
-                                        className="w-full rounded-lg border-slate-200 p-3 bg-slate-50"
-                                    />
-                                </div>
-                            </div>
+                {/* Update Username */}
+                <div className="bg-white dark:bg-background-dark rounded-2xl border border-slate-200 dark:border-white/10 p-8 shadow-sm mb-6">
+                    <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+                        <span className="material-symbols-outlined text-primary">badge</span>
+                        Username
+                    </h2>
+                    <form onSubmit={handleUpdateUsername} className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-semibold mb-2">Display Name</label>
+                            <input
+                                type="text"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                className="w-full rounded-lg border border-slate-300 dark:border-white/10 p-3 bg-slate-50 dark:bg-background-dark text-slate-900 dark:text-white focus:ring-2 focus:ring-primary"
+                                placeholder="Enter your username"
+                                required
+                            />
+                            <p className="mt-1 text-xs text-slate-500">This is how other users will see you</p>
                         </div>
-                    </div>
-
-                    {/* Preferences */}
-                    <div className="bg-white rounded-2xl border border-slate-100 p-8 shadow-sm">
-                        <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-                            <span className="material-symbols-outlined text-primary">tune</span>
-                            Preferences
-                        </h2>
-                        <div className="space-y-4">
-                            <label className="flex items-center gap-3 cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    checked={formData.notifications}
-                                    onChange={(e) => setFormData({ ...formData, notifications: e.target.checked })}
-                                    className="w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary/20"
-                                />
-                                <div>
-                                    <p className="font-semibold">Order Notifications</p>
-                                    <p className="text-sm text-gray-500">Receive updates about your orders</p>
-                                </div>
-                            </label>
-                            <label className="flex items-center gap-3 cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    checked={formData.newsletter}
-                                    onChange={(e) => setFormData({ ...formData, newsletter: e.target.checked })}
-                                    className="w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary/20"
-                                />
-                                <div>
-                                    <p className="font-semibold">Newsletter</p>
-                                    <p className="text-sm text-gray-500">Get exclusive deals and new product announcements</p>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div className="flex gap-4">
-                        <button type="submit" className="bg-primary text-white px-8 py-4 rounded-xl font-bold hover:brightness-110 transition-all shadow-lg shadow-primary/20">
-                            Save Changes
+                        <button
+                            type="submit"
+                            disabled={loading || username === user?.user_metadata?.display_name}
+                            className="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-6 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {loading ? 'Updating...' : 'Update Username'}
                         </button>
-                        <button type="button" className="bg-slate-100 text-slate-700 px-8 py-4 rounded-xl font-bold hover:bg-slate-200 transition-all">
-                            Cancel
+                    </form>
+                </div>
+
+                {/* Update Email */}
+                <div className="bg-white dark:bg-background-dark rounded-2xl border border-slate-200 dark:border-white/10 p-8 shadow-sm mb-6">
+                    <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+                        <span className="material-symbols-outlined text-primary">mail</span>
+                        Email Address
+                    </h2>
+                    <form onSubmit={handleUpdateEmail} className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-semibold mb-2">Email</label>
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="w-full rounded-lg border border-slate-300 dark:border-white/10 p-3 bg-slate-50 dark:bg-background-dark text-slate-900 dark:text-white focus:ring-2 focus:ring-primary"
+                                required
+                            />
+                            <p className="mt-1 text-xs text-slate-500">You'll need to verify your new email address</p>
+                        </div>
+                        <button
+                            type="submit"
+                            disabled={loading || email === user.email}
+                            className="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-6 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {loading ? 'Updating...' : 'Update Email'}
                         </button>
-                    </div>
-                </form>
+                    </form>
+                </div>
+
+                {/* Update Password */}
+                <div className="bg-white dark:bg-background-dark rounded-2xl border border-slate-200 dark:border-white/10 p-8 shadow-sm">
+                    <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+                        <span className="material-symbols-outlined text-primary">lock</span>
+                        Change Password
+                    </h2>
+                    <form onSubmit={handleUpdatePassword} className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-semibold mb-2">New Password</label>
+                            <input
+                                type="password"
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
+                                className="w-full rounded-lg border border-slate-300 dark:border-white/10 p-3 bg-slate-50 dark:bg-background-dark text-slate-900 dark:text-white focus:ring-2 focus:ring-primary"
+                                placeholder="••••••••"
+                                required
+                            />
+                            <p className="mt-1 text-xs text-slate-500">Must be at least 6 characters</p>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold mb-2">Confirm New Password</label>
+                            <input
+                                type="password"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                className="w-full rounded-lg border border-slate-300 dark:border-white/10 p-3 bg-slate-50 dark:bg-background-dark text-slate-900 dark:text-white focus:ring-2 focus:ring-primary"
+                                placeholder="••••••••"
+                                required
+                            />
+                        </div>
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-6 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {loading ? 'Updating...' : 'Update Password'}
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     );
-};
-
-export default SettingsPage;
+}

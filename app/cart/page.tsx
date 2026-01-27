@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useCart } from '../../context/CartContext';
+import { formatPrice, usdToGhs } from '../../lib/utils';
 
 const CartPage: React.FC = () => {
     const { cartItems, removeFromCart, updateQuantity } = useCart();

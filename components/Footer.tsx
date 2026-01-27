@@ -4,12 +4,12 @@ import Link from 'next/link';
 
 const Footer: React.FC = () => (
     <footer className="bg-white dark:bg-[#111] border-t border-charcoal/10 dark:border-white/5 pt-20 pb-10 mt-20">
-        <div className="max-w-[1440px] mx-auto px-4 lg:px-10">
+        <div className="max-w-360 mx-auto px-4 lg:px-10">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-20">
                 <div className="lg:col-span-2 space-y-8">
                     <div className="flex items-center gap-2">
                         <div className="bg-primary p-1.5 rounded-lg text-white">
-                            <span className="material-symbols-outlined !text-2xl">waves</span>
+                            <span className="material-symbols-outlined text-2xl!">waves</span>
                         </div>
                         <h1 className="text-xl font-extrabold tracking-tight dark:text-white uppercase">Big Ideas <span className="text-primary">Inc.</span></h1>
                     </div>
