@@ -42,7 +42,7 @@ const Header: React.FC = () => {
     }, [isAccountMenuOpen]);
 
     return (
-        <header className={`sticky top-0 z-50 transition-all duration-300 relative ${isScrolled ? 'bg-white/95 dark:bg-background-dark/95 backdrop-blur-md shadow-sm' : 'bg-white dark:bg-background-dark border-b border-slate-100 dark:border-white/10'}`}>
+        <header className={`top-0 z-50 transition-all duration-300 relative ${isScrolled ? 'bg-white/95 dark:bg-background-dark/95 backdrop-blur-md shadow-sm' : 'bg-white dark:bg-background-dark border-b border-slate-100 dark:border-white/10'}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-3 sm:py-4 flex items-center justify-between gap-2 sm:gap-4 lg:gap-8">
                 <Link href="/" className="flex items-center gap-1.5 sm:gap-2 shrink-0 group">
                     <div className="bg-primary p-1 sm:p-1.5 rounded-lg text-white">

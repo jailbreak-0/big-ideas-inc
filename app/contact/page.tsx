@@ -4,7 +4,7 @@ import React from 'react';
 
 const ContactPage: React.FC = () => {
     return (
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-20 py-12 lg:py-20">
+        <div className="max-w-360 mx-auto px-6 lg:px-20 py-12 lg:py-20">
             <div className="mb-16 border-l-4 border-primary pl-6">
                 <h2 className="text-5xl font-black tracking-tighter mb-4 leading-none">Contact Our Team</h2>
                 <p className="text-lg text-[#45a1a1] font-medium max-w-2xl">We're committed to your musical excellence. Reach out with any questions about our instruments, orders, or upcoming workshops.</p>
@@ -20,16 +20,16 @@ const ContactPage: React.FC = () => {
                         <div className="grid md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <label className="text-sm font-bold uppercase tracking-wider text-[#45a1a1]">Full Name</label>
-                                <input className="w-full bg-slate-50 rounded-xl border-none p-4" placeholder="Enter your name" />
+                                <input className="w-full bg-slate-50 rounded-xl border-none p-4 text-gray-500" placeholder="Enter your name" />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-sm font-bold uppercase tracking-wider text-[#45a1a1]">Email</label>
-                                <input className="w-full bg-slate-50 rounded-xl border-none p-4" placeholder="name@example.com" />
+                                <input className="w-full bg-slate-50 rounded-xl border-none p-4 text-gray-500" placeholder="name@example.com" />
                             </div>
                         </div>
                         <div className="space-y-2">
                             <label className="text-sm font-bold uppercase tracking-wider text-[#45a1a1]">Message</label>
-                            <textarea className="w-full bg-slate-50 rounded-xl border-none p-4 min-h-[150px]" placeholder="How can we help?" />
+                            <textarea className="w-full bg-slate-50 rounded-xl border-none p-4 min-h-37.5 text-gray-500" placeholder="How can we help?" />
                         </div>
                         <button className="bg-primary text-white px-12 py-4 rounded-xl font-extrabold shadow-lg">Send Message</button>
                     </form>
@@ -47,11 +47,11 @@ const ContactPage: React.FC = () => {
                     <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6">
                         <div className="flex items-center gap-4">
                             <div className="size-12 rounded-xl bg-primary/5 flex items-center justify-center text-primary"><span className="material-symbols-outlined">call</span></div>
-                            <div><p className="text-xs font-bold text-[#45a1a1] uppercase">Phone</p><p className="font-bold">1-800-BIG-IDEA</p></div>
+                            <div><p className="text-xs font-bold text-[#45a1a1] uppercase">Phone</p><p className="font-bold text-gray-500">1-800-BIG-IDEAS</p></div>
                         </div>
                         <div className="flex items-center gap-4">
                             <div className="size-12 rounded-xl bg-primary/5 flex items-center justify-center text-primary"><span className="material-symbols-outlined">alternate_email</span></div>
-                            <div><p className="text-xs font-bold text-[#45a1a1] uppercase">Email</p><p className="font-bold">hello@proaudiogear.com</p></div>
+                            <div><p className="text-xs font-bold text-[#45a1a1] uppercase">Email</p><p className="font-bold text-gray-500">hello@bigideasinc.com</p></div>
                         </div>
                     </div>
                 </div>
