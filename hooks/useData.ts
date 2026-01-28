@@ -307,3 +307,15 @@ export function useOrders(userId: string | null, options: UseDataOptions = {}) {
 
   return { data, loading, error, refetch: fetch };
 }
+
+// Combined hook for fetching multiple data sources
+export function useData() {
+  const { data: products, loading: productsLoading } = useProducts();
+  const { data: categories, loading: categoriesLoading } = useCategories();
+
+  return {
+    products: products || [],
+    categories: categories || [],
+    loading: productsLoading || categoriesLoading,
+  };
+}

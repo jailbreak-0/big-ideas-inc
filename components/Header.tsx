@@ -1,19 +1,26 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../hooks/useAuth';
+import { useData } from '../hooks/useData';
 import LoadingBar from './LoadingBar';
 
 const Header: React.FC = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [showSuggestions, setShowSuggestions] = useState(false);
     const pathname = usePathname();
+    const router = useRouter();
     const { cartCount } = useCart();
     const { user, signOut } = useAuth();
+    const { products, categories } = useData();
+    const searchRef = useRef<HTMLDivElement>(null);
+    const mobileSearchRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 10);
@@ -25,6 +32,8 @@ const Header: React.FC = () => {
     useEffect(() => {
         setIsMobileMenuOpen(false);
         setIsAccountMenuOpen(false);
+        setShowSuggestions(false);
+        setSearchQuery('');
     }, [pathname]);
 
     // Close account menu when clicking outside
@@ -41,28 +50,148 @@ const Header: React.FC = () => {
         }
     }, [isAccountMenuOpen]);
 
+    // Close search suggestions when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            const target = e.target as HTMLElement;
+            if (searchRef.current && !searchRef.current.contains(target) &&
+                mobileSearchRef.current && !mobileSearchRef.current.contains(target)) {
+                setShowSuggestions(false);
+            }
+        };
+        if (showSuggestions) {
+            document.addEventListener('mousedown', handleClickOutside);
+            return () => document.removeEventListener('mousedown', handleClickOutside);
+        }
+    }, [showSuggestions]);
+
+    // Search suggestions
+    const searchSuggestions = useMemo(() => {
+        if (!searchQuery.trim() || !products) return [];
+
+        const lowerQuery = searchQuery.toLowerCase();
+        const filtered = products.filter(product => {
+            return product.name.toLowerCase().includes(lowerQuery) ||
+                   product.brand.toLowerCase().includes(lowerQuery);
+        });
+
+        return filtered.slice(0, 8); // Limit to 8 suggestions
+    }, [searchQuery, products]);
+
+    // Get category name
+    const getCategoryName = (categoryId?: string) => {
+        if (!categoryId || !categories) return null;
+        return categories.find(cat => cat.id === categoryId)?.name;
+    };
+
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+            setShowSuggestions(false);
+            router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+        }
+    };
+
+    const handleSuggestionClick = (productId: string) => {
+        setShowSuggestions(false);
+        setSearchQuery('');
+        router.push(`/product/${productId}`);
+    };
+
+    const handleViewAllResults = () => {
+        if (searchQuery.trim()) {
+            setShowSuggestions(false);
+            router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+        }
+    };
+
     return (
         <header className={`top-0 z-50 transition-all duration-300 relative ${isScrolled ? 'bg-white/95 dark:bg-background-dark/95 backdrop-blur-md shadow-sm' : 'bg-white dark:bg-background-dark border-b border-slate-100 dark:border-white/10'}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-3 sm:py-4 flex items-center justify-between gap-2 sm:gap-4 lg:gap-8">
                 <Link href="/" className="flex items-center gap-1.5 sm:gap-2 shrink-0 group">
-                    <div className="bg-primary p-1 sm:p-1.5 rounded-lg text-white">
-                        <span className="material-symbols-outlined text-2xl! sm:text-3xl!">waves</span>
-                    </div>
                     <h1 className="text-base sm:text-xl font-extrabold tracking-tight dark:text-white uppercase">
                         Big Ideas <span className="text-primary">Inc.</span>
                     </h1>
                 </Link>
 
                 {/* Desktop Search */}
-                <div className="flex-1 max-w-2xl hidden lg:block">
-                    <div className="relative group">
-                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                <div className="flex-1 max-w-2xl hidden lg:block" ref={searchRef}>
+                    <form onSubmit={handleSearch} className="relative group">
+                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 z-10">search</span>
                         <input
                             type="text"
+                            value={searchQuery}
+                            onChange={(e) => {
+                                setSearchQuery(e.target.value);
+                                setShowSuggestions(true);
+                            }}
+                            onFocus={() => searchQuery && setShowSuggestions(true)}
                             className="w-full bg-slate-100 dark:bg-white/5 border-none rounded-xl py-3 pl-12 pr-4 text-sm focus:ring-2 focus:ring-primary transition-all"
                             placeholder="Search instruments, studio gear, brands..."
                         />
-                    </div>
+                        {/* Search Suggestions Dropdown */}
+                        {showSuggestions && searchQuery && (
+                            <div className="absolute top-full mt-2 w-full bg-white dark:bg-background-dark rounded-xl shadow-2xl border border-slate-200 dark:border-white/10 py-2 z-50 max-h-125 overflow-y-auto">
+                                {searchSuggestions.length > 0 ? (
+                                    <>
+                                        <div className="px-4 py-2 text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider">
+                                            Suggestions
+                                        </div>
+                                        {searchSuggestions.map(product => {
+                                            const categoryName = getCategoryName('category_id' in product ? product.category_id : undefined);
+                                            return (
+                                                <button
+                                                    key={product.id}
+                                                    onClick={() => handleSuggestionClick(product.id)}
+                                                    className="w-full px-4 py-3 flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors text-left"
+                                                >
+                                                    <div className="w-12 h-12 bg-slate-100 dark:bg-white/5 rounded-lg shrink-0 overflow-hidden">
+                                                        <img
+                                                            src={product.image_url || ''}
+                                                            alt={product.name}
+                                                            className="w-full h-full object-contain"
+                                                        />
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                                                            {product.brand}
+                                                        </p>
+                                                        <p className="text-sm font-semibold text-charcoal dark:text-white truncate">
+                                                            {product.name}
+                                                        </p>
+                                                        {categoryName && (
+                                                            <p className="text-xs text-primary">{categoryName}</p>
+                                                        )}
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <p className="text-sm font-bold text-charcoal dark:text-white">
+                                                            ${product.price.toLocaleString()}
+                                                        </p>
+                                                    </div>
+                                                </button>
+                                            );
+                                        })}
+                                        <button
+                                            onClick={handleViewAllResults}
+                                            className="w-full px-4 py-3 text-sm text-primary font-bold hover:bg-slate-50 dark:hover:bg-white/5 transition-colors flex items-center justify-center gap-2 border-t border-slate-200 dark:border-white/10 mt-2"
+                                        >
+                                            View all results for "{searchQuery}"
+                                            <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                                        </button>
+                                    </>
+                                ) : (
+                                    <div className="px-4 py-8 text-center">
+                                        <span className="material-symbols-outlined text-4xl text-slate-300 dark:text-slate-700 mb-2">
+                                            search_off
+                                        </span>
+                                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                                            No products found for "{searchQuery}"
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </form>
                 </div>
 
                 <div className="flex items-center gap-2 sm:gap-4 lg:gap-6">
@@ -164,15 +293,75 @@ const Header: React.FC = () => {
             </div>
 
             {/* Mobile Search */}
-            <div className="lg:hidden px-4 sm:px-6 pb-3">
-                <div className="relative">
-                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+            <div className="lg:hidden px-4 sm:px-6 pb-3" ref={mobileSearchRef}>
+                <form onSubmit={handleSearch} className="relative">
+                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl z-10">search</span>
                     <input
                         type="text"
+                        value={searchQuery}
+                        onChange={(e) => {
+                            setSearchQuery(e.target.value);
+                            setShowSuggestions(true);
+                        }}
+                        onFocus={() => searchQuery && setShowSuggestions(true)}
                         className="w-full bg-slate-100 dark:bg-white/5 border-none rounded-xl py-2.5 pl-11 pr-4 text-sm focus:ring-2 focus:ring-primary transition-all"
                         placeholder="Search..."
                     />
-                </div>
+                    {/* Mobile Search Suggestions */}
+                    {showSuggestions && searchQuery && (
+                        <div className="absolute top-full mt-2 w-full bg-white dark:bg-background-dark rounded-xl shadow-2xl border border-slate-200 dark:border-white/10 py-2 z-50 max-h-100 overflow-y-auto">
+                            {searchSuggestions.length > 0 ? (
+                                <>
+                                    <div className="px-4 py-2 text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider">
+                                        Suggestions
+                                    </div>
+                                    {searchSuggestions.map(product => (
+                                        <button
+                                            key={product.id}
+                                            onClick={() => handleSuggestionClick(product.id)}
+                                            className="w-full px-4 py-3 flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors text-left"
+                                        >
+                                            <div className="w-10 h-10 bg-slate-100 dark:bg-white/5 rounded-lg shrink-0 overflow-hidden">
+                                                <img
+                                                    src={product.image_url || ''}
+                                                    alt={product.name}
+                                                    className="w-full h-full object-contain"
+                                                />
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-xs text-slate-500 dark:text-slate-400">
+                                                    {product.brand}
+                                                </p>
+                                                <p className="text-sm font-semibold text-charcoal dark:text-white truncate">
+                                                    {product.name}
+                                                </p>
+                                            </div>
+                                            <div className="text-xs font-bold text-charcoal dark:text-white">
+                                                ${product.price.toLocaleString()}
+                                            </div>
+                                        </button>
+                                    ))}
+                                    <button
+                                        onClick={handleViewAllResults}
+                                        className="w-full px-4 py-3 text-sm text-primary font-bold hover:bg-slate-50 dark:hover:bg-white/5 transition-colors flex items-center justify-center gap-2 border-t border-slate-200 dark:border-white/10 mt-2"
+                                    >
+                                        View all results
+                                        <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                                    </button>
+                                </>
+                            ) : (
+                                <div className="px-4 py-6 text-center">
+                                    <span className="material-symbols-outlined text-3xl text-slate-300 dark:text-slate-700 mb-2">
+                                        search_off
+                                    </span>
+                                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                                        No products found
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </form>
             </div>
 
             {/* Desktop Navigation */}

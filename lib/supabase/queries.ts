@@ -1,5 +1,4 @@
 import { createClient } from './client';
-import { createClient as createServerClient } from './server';
 import type { Database } from './database.types';
 
 type Tables = Database['public']['Tables'];
