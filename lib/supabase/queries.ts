@@ -82,7 +82,7 @@ export async function getSubcategoriesByCategoryServer(categoryId: string) {
   const cached = getFromCache<Subcategory[]>(cacheKey);
   if (cached) return cached;
 
-  const supabase = await createServerClient();
+  const supabase = createClient();
   const { data, error } = await supabase
     .from('subcategories')
     .select('*')
@@ -106,7 +106,7 @@ export async function getProductsServer(params?: {
   const cached = getFromCache<Product[]>(cacheKey);
   if (cached) return cached;
 
-  const supabase = await createServerClient();
+  const supabase = createClient();
   let query = supabase
     .from('products')
     .select(`
