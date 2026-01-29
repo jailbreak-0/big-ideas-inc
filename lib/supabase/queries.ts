@@ -125,6 +125,7 @@ export async function getProductsServer(params?: {
       stock_quantity,
       category_id,
       subcategory_id,
+      specs,
       category:categories(name, slug),
       subcategory:subcategories(name, slug)
     `);
@@ -196,6 +197,8 @@ export async function getProducts(params?: {
       featured,
       category_id,
       subcategory_id,
+      specs,
+      stock_quantity,
       category:categories(name, slug),
       subcategory:subcategories(name, slug)
     `);

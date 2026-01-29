@@ -18,7 +18,7 @@ const ProductDetailPage: React.FC = () => {
 
     if (loading) {
         return (
-            <div className="max-w-[1440px] mx-auto px-6 lg:px-12 py-8 min-h-screen flex items-center justify-center">
+            <div className="max-w-360 mx-auto px-6 lg:px-12 py-8 min-h-screen flex items-center justify-center">
                 <div className="text-center">
                     <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                     <p className="text-slate-600 dark:text-slate-400">Loading product...</p>
@@ -29,7 +29,7 @@ const ProductDetailPage: React.FC = () => {
 
     if (!product) {
         return (
-            <div className="max-w-[1440px] mx-auto px-6 lg:px-12 py-8 min-h-screen flex items-center justify-center">
+            <div className="max-w-360 mx-auto px-6 lg:px-12 py-8 min-h-screen flex items-center justify-center">
                 <div className="text-center">
                     <h1 className="text-4xl font-bold mb-4">Product Not Found</h1>
                     <p className="text-slate-600 dark:text-slate-400 mb-6">Sorry, we couldn't find the product you're looking for.</p>
@@ -41,19 +41,20 @@ const ProductDetailPage: React.FC = () => {
         );
     }
 
-    const getCategoryName = (category: any) => {
+    const getCategoryName = (productData: any) => {
+        const category = productData?.category;
         if (!category) return 'Products';
         if (Array.isArray(category)) return category[0]?.name || 'Products';
         return category.name || 'Products';
     };
 
     return (
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-12 py-8">
+        <div className="max-w-360 mx-auto px-6 lg:px-12 py-8">
             {/* Breadcrumbs */}
             <nav className="flex items-center gap-2 text-sm text-primary/60 dark:text-[#45a1a1] mb-8">
                 <Link className="hover:text-primary" href="/">Home</Link>
                 <span className="material-symbols-outlined text-xs">chevron_right</span>
-                <Link className="hover:text-primary" href="/catalog">{getCategoryName(product.category)}</Link>
+                <Link className="hover:text-primary" href="/catalog">{getCategoryName(product)}</Link>
                 <span className="material-symbols-outlined text-xs">chevron_right</span>
                 <span className="text-[#0c1d1d] dark:text-[#f8fcfc] font-semibold">{product.name}</span>
             </nav>
@@ -68,7 +69,7 @@ const ProductDetailPage: React.FC = () => {
                             </div>
                         ))}
                     </div>
-                    <div className="flex-1 bg-white dark:bg-white/5 rounded-2xl overflow-hidden aspect-[4/3] flex items-center justify-center relative order-1 md:order-2 group">
+                    <div className="flex-1 bg-white dark:bg-white/5 rounded-2xl overflow-hidden aspect-4/3 flex items-center justify-center relative order-1 md:order-2 group">
                         <img src={product.image_url} alt={product.name} className="w-full h-full object-contain p-10" />
                         <button className="absolute top-4 right-4 bg-white/80 dark:bg-black/40 backdrop-blur p-3 rounded-full hover:bg-white transition-colors shadow-sm">
                             <span className="material-symbols-outlined text-primary">zoom_in</span>
@@ -113,13 +114,13 @@ const ProductDetailPage: React.FC = () => {
                                         price: Number(product.price),
                                         image: product.image_url || '',
                                         brand: product.brand,
-                                        category: getCategoryName(product.category),
+                                        category: getCategoryName(product),
                                         description: product.description || '',
                                         rating: Number(product.rating),
                                         reviewsCount: product.reviews_count,
                                         status: product.status as any
                                     })}
-                                    className="flex-[3] bg-primary text-white rounded-xl font-extrabold py-4 flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-lg shadow-primary/20"
+                                    className="flex-3 bg-primary text-white rounded-xl font-extrabold py-4 flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-lg shadow-primary/20"
                                 >
                                     <span className="material-symbols-outlined">shopping_cart</span>
                                     ADD TO CART
@@ -131,7 +132,7 @@ const ProductDetailPage: React.FC = () => {
             </section>
 
             {/* Specs Section */}
-            {product.specs && Object.keys(product.specs).length > 0 && (
+            {(product as any).specs && Object.keys((product as any).specs).length > 0 && (
                 <section className="grid grid-cols-1 lg:grid-cols-12 gap-12">
                     <div className="lg:col-span-8 bg-white dark:bg-white/5 p-8 rounded-2xl border border-slate-100 dark:border-white/10">
                         <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
@@ -140,10 +141,10 @@ const ProductDetailPage: React.FC = () => {
                         </h3>
                         <table className="w-full text-left text-sm">
                             <tbody className="divide-y divide-slate-100 dark:divide-white/5">
-                                {Object.entries(product.specs).map(([key, val]) => (
+                                {Object.entries((product as any).specs).map(([key, val]) => (
                                     <tr key={key} className="group">
                                         <td className="py-4 font-bold text-primary w-1/3">{key}</td>
-                                        <td className="py-4 text-gray-600 dark:text-gray-300">{val}</td>
+                                        <td className="py-4 text-gray-600 dark:text-gray-300">{String(val)}</td>
                                     </tr>
                                 ))}
                             </tbody>
