@@ -155,7 +155,7 @@ const SearchPageContent: React.FC = () => {
                             return (
                                 <Link
                                     key={product.id}
-                                    href={`/product/${product.id}`}
+                                    href={`/product/${product.slug}`}
                                     className="group relative bg-white dark:bg-white/5 rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 hover:shadow-xl hover:border-primary/50 transition-all duration-300"
                                 >
                                     {/* Discount Badge */}

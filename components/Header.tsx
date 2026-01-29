@@ -92,10 +92,10 @@ const Header: React.FC = () => {
         }
     };
 
-    const handleSuggestionClick = (productId: string) => {
+    const handleSuggestionClick = (productSlug: string) => {
         setShowSuggestions(false);
         setSearchQuery('');
-        router.push(`/product/${productId}`);
+        router.push(`/product/${productSlug}`);
     };
 
     const handleViewAllResults = () => {
@@ -142,7 +142,7 @@ const Header: React.FC = () => {
                                             return (
                                                 <button
                                                     key={product.id}
-                                                    onClick={() => handleSuggestionClick(product.id)}
+                                                    onClick={() => handleSuggestionClick(product.slug)}
                                                     className="w-full px-4 py-3 flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors text-left"
                                                 >
                                                     <div className="w-12 h-12 bg-slate-100 dark:bg-white/5 rounded-lg shrink-0 overflow-hidden">

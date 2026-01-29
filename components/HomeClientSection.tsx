@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Link from 'next/link';
 import { useCart } from '../context/CartContext';
 import { formatPrice, usdToGhs } from '../lib/utils';
 
@@ -48,14 +49,18 @@ export default function HomeClientSection({ featuredProducts }: HomeClientSectio
                             </span>
                             <span className="material-symbols-outlined text-charcoal/20">favorite</span>
                         </div>
-                        <div className="aspect-video mb-4 sm:mb-6 overflow-hidden rounded-xl">
-                            <img
-                                src={featuredProducts[0].image_url || ''}
-                                alt={featuredProducts[0].name}
-                                className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700"
-                            />
-                        </div>
-                        <h3 className="text-xl sm:text-2xl font-bold mb-2">{featuredProducts[0].name}</h3>
+                        <Link href={`/product/${featuredProducts[0].slug}`} className="block">
+                            <div className="aspect-video mb-4 sm:mb-6 overflow-hidden rounded-xl">
+                                <img
+                                    src={featuredProducts[0].image_url || ''}
+                                    alt={featuredProducts[0].name}
+                                    className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700"
+                                />
+                            </div>
+                        </Link>
+                        <Link href={`/product/${featuredProducts[0].slug}`}>
+                            <h3 className="text-xl sm:text-2xl font-bold mb-2 hover:text-primary transition-colors">{featuredProducts[0].name}</h3>
+                        </Link>
                         <p className="text-charcoal/60 dark:text-white/60 text-sm mb-4 sm:mb-6">{featuredProducts[0].description}</p>
                     </div>
                     <div className="flex items-center justify-between">
@@ -86,10 +91,14 @@ export default function HomeClientSection({ featuredProducts }: HomeClientSectio
 
             {featuredProducts.slice(1, 3).map(product => (
                 <div key={product.id} className="bg-white dark:bg-background-dark p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-charcoal/10 flex flex-col group shadow-sm hover:shadow-xl transition-all">
-                    <div className="aspect-square mb-3 sm:mb-4 overflow-hidden rounded-xl bg-slate-50 dark:bg-slate-900">
-                        <img src={product.image_url || ''} alt={product.name} className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-700" />
-                    </div>
-                    <h4 className="font-bold text-sm line-clamp-1">{product.name}</h4>
+                    <Link href={`/product/${product.slug}`} className="block">
+                        <div className="aspect-square mb-3 sm:mb-4 overflow-hidden rounded-xl bg-slate-50 dark:bg-slate-900">
+                            <img src={product.image_url || ''} alt={product.name} className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-700" />
+                        </div>
+                    </Link>
+                    <Link href={`/product/${product.slug}`}>
+                        <h4 className="font-bold text-sm line-clamp-1 hover:text-primary transition-colors">{product.name}</h4>
+                    </Link>
                     <span className="text-charcoal/50 text-xs mb-3">{product.brand}</span>
                     <div className="mt-auto flex justify-between items-center">
                         <span className="font-black text-lg text-primary">{formatPrice(product.price)}</span>
