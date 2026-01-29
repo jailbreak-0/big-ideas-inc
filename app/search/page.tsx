@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useData } from '@/hooks/useData';
@@ -20,7 +20,7 @@ interface Product {
     status?: string;
 }
 
-const SearchPage: React.FC = () => {
+const SearchPageContent: React.FC = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
     const query = searchParams.get('q') || '';
@@ -288,6 +288,21 @@ const SearchPage: React.FC = () => {
                 )}
             </div>
         </div>
+    );
+};
+
+const SearchPage: React.FC = () => {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-white dark:bg-background-dark flex items-center justify-center">
+                <div className="text-center">
+                    <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-slate-600 dark:text-slate-400">Loading search...</p>
+                </div>
+            </div>
+        }>
+            <SearchPageContent />
+        </Suspense>
     );
 };
 

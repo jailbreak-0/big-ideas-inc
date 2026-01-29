@@ -20,6 +20,8 @@ CREATE TABLE IF NOT EXISTS subcategories (
     category_id UUID REFERENCES categories(id) ON DELETE CASCADE,
     name TEXT NOT NULL,
     slug TEXT NOT NULL,
+    description TEXT,
+    image_url TEXT,
     item_count INTEGER DEFAULT 0,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     UNIQUE(category_id, slug)

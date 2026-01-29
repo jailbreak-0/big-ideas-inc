@@ -123,6 +123,8 @@ export async function getProductsServer(params?: {
       status,
       featured,
       stock_quantity,
+      category_id,
+      subcategory_id,
       category:categories(name, slug),
       subcategory:subcategories(name, slug)
     `);
@@ -192,6 +194,8 @@ export async function getProducts(params?: {
       reviews_count,
       status,
       featured,
+      category_id,
+      subcategory_id,
       category:categories(name, slug),
       subcategory:subcategories(name, slug)
     `);
@@ -236,6 +240,8 @@ export async function getProductBySlug(slug: string) {
       status,
       specs,
       stock_quantity,
+      category_id,
+      subcategory_id,
       category:categories(name, slug),
       subcategory:subcategories(name, slug)
     `)
@@ -353,7 +359,7 @@ export async function getCartItems(userId: string) {
     .eq('cart_id', cart.id);
 
   if (error) throw error;
-  return data as CartItem[];
+  return data;
 }
 
 export async function addToCart(userId: string, productId: string, quantity = 1) {

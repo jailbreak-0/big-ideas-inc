@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
-export default function LoadingBar() {
+function LoadingBarInner() {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const [isLoading, setIsLoading] = useState(false);
@@ -51,5 +52,13 @@ export default function LoadingBar() {
                 }}
             />
         </div>
+    );
+}
+
+export default function LoadingBar() {
+    return (
+        <Suspense fallback={null}>
+            <LoadingBarInner />
+        </Suspense>
     );
 }
