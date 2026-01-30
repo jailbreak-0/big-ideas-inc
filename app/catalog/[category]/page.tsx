@@ -1,18 +1,24 @@
 import React from 'react';
 import Link from 'next/link';
 import { getCategoryBySlug, getSubcategoriesByCategory, getCategories } from '../../../lib/supabase/queries';
-import { getCategories as getCategoriesStatic } from '../../../lib/supabase/static-queries';
 import { notFound } from 'next/navigation';
 
 // Revalidate every 5 minutes
 export const revalidate = 300;
+export const dynamicParams = true;
 
 // Generate static params for all categories
 export async function generateStaticParams() {
-    const categories = await getCategoriesStatic();
-    return categories.map((category) => ({
-        category: category.slug,
-    }));
+    try {
+        const categories = await getCategories();
+        return categories.map((category) => ({
+            category: category.slug,
+        }));
+    } catch (error) {
+        console.error('Error generating static params for categories:', error);
+        // Return empty array to allow all params to be generated on-demand
+        return [];
+    }
 }
 
 interface PageProps {

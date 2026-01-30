@@ -1,7 +1,6 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
-import { getCategoryBySlug, getSubcategoriesByCategoryServer, getProductsServer } from '../../../../lib/supabase/queries';
-import { getCategories, getSubcategoriesByCategory } from '../../../../lib/supabase/static-queries';
+import { getCategoryBySlug, getSubcategoriesByCategoryServer, getProductsServer, getCategories, getSubcategoriesByCategory } from '../../../../lib/supabase/queries';
 import SubcategoryClient from './SubcategoryClient';
 
 // Revalidate every 5 minutes
@@ -9,7 +8,6 @@ export const revalidate = 300;
 export const dynamicParams = true; // Allow dynamic params at runtime
 
 // Generate static params for all category/subcategory combinations
-// Use static queries since this runs at build time without request context
 export async function generateStaticParams() {
     try {
         const categories = await getCategories();
@@ -27,7 +25,8 @@ export async function generateStaticParams() {
         
         return params;
     } catch (error) {
-        console.error('Error generating static params:', error);
+        console.error('Error generating static params for subcategories:', error);
+        // Return empty array to allow all params to be generated on-demand
         return [];
     }
 }

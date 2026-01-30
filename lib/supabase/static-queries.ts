@@ -7,10 +7,18 @@ type Subcategory = Tables['subcategories']['Row'];
 
 // For build-time and static generation - doesn't use cookies
 function createClient() {
-  return createSupabaseClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+  
+  if (!supabaseUrl || !supabaseKey) {
+    console.error('Missing Supabase environment variables:', {
+      url: !!supabaseUrl,
+      key: !!supabaseKey
+    });
+    throw new Error('Supabase URL and key are required for static generation');
+  }
+  
+  return createSupabaseClient<Database>(supabaseUrl, supabaseKey)
 }
 
 // Categories - for static generation
