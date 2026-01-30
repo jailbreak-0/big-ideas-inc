@@ -1,4 +1,4 @@
-import { createClient } from './client';
+import { createClient } from './server';
 import type { Database } from './database.types';
 
 type Tables = Database['public']['Tables'];
@@ -48,7 +48,7 @@ export async function getCategories() {
   const cached = getFromCache<Category[]>(cacheKey);
   if (cached) return cached;
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from('categories')
     .select('*')
@@ -64,7 +64,7 @@ export async function getCategoryBySlug(slug: string) {
   const cached = getFromCache<Category>(cacheKey);
   if (cached) return cached;
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from('categories')
     .select('*')
@@ -82,7 +82,7 @@ export async function getSubcategoriesByCategoryServer(categoryId: string) {
   const cached = getFromCache<Subcategory[]>(cacheKey);
   if (cached) return cached;
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from('subcategories')
     .select('*')
@@ -106,7 +106,7 @@ export async function getProductsServer(params?: {
   const cached = getFromCache<Product[]>(cacheKey);
   if (cached) return cached;
 
-  const supabase = createClient();
+  const supabase = await createClient();
   let query = supabase
     .from('products')
     .select(`
@@ -154,7 +154,7 @@ export async function getSubcategoriesByCategory(categoryId: string) {
   const cached = getFromCache<Subcategory[]>(cacheKey);
   if (cached) return cached;
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from('subcategories')
     .select('*')
@@ -179,7 +179,7 @@ export async function getProducts(params?: {
   const cached = getFromCache<Product[]>(cacheKey);
   if (cached) return cached;
 
-  const supabase = createClient();
+  const supabase = await createClient();
   let query = supabase
     .from('products')
     .select(`
@@ -226,7 +226,7 @@ export async function getProductBySlug(slug: string) {
   const cached = getFromCache<Product>(cacheKey);
   if (cached) return cached;
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from('products')
     .select(`
@@ -262,7 +262,7 @@ export async function getFeaturedProducts(limit = 6) {
 
 // Wishlist
 export async function getWishlist(userId: string) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from('wishlists')
     .select(`
@@ -287,7 +287,7 @@ export async function getWishlist(userId: string) {
 }
 
 export async function addToWishlist(userId: string, productId: string) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from('wishlists')
     .insert({ user_id: userId, product_id: productId })
@@ -299,7 +299,7 @@ export async function addToWishlist(userId: string, productId: string) {
 }
 
 export async function removeFromWishlist(userId: string, productId: string) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { error } = await supabase
     .from('wishlists')
     .delete()
@@ -311,7 +311,7 @@ export async function removeFromWishlist(userId: string, productId: string) {
 
 // Cart
 export async function getOrCreateCart(userId: string) {
-  const supabase = createClient();
+  const supabase = await createClient();
   
   // Try to get existing cart
   let { data: cart, error: fetchError } = await supabase
@@ -338,7 +338,7 @@ export async function getOrCreateCart(userId: string) {
 }
 
 export async function getCartItems(userId: string) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const cart = await getOrCreateCart(userId);
 
   const { data, error } = await supabase
@@ -366,7 +366,7 @@ export async function getCartItems(userId: string) {
 }
 
 export async function addToCart(userId: string, productId: string, quantity = 1) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const cart = await getOrCreateCart(userId);
 
   // Check if item already exists
@@ -402,7 +402,7 @@ export async function addToCart(userId: string, productId: string, quantity = 1)
 }
 
 export async function updateCartItemQuantity(cartItemId: string, quantity: number) {
-  const supabase = createClient();
+  const supabase = await createClient();
   
   if (quantity <= 0) {
     const { error } = await supabase
@@ -426,7 +426,7 @@ export async function updateCartItemQuantity(cartItemId: string, quantity: numbe
 }
 
 export async function removeFromCart(cartItemId: string) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { error } = await supabase
     .from('cart_items')
     .delete()
@@ -436,7 +436,7 @@ export async function removeFromCart(cartItemId: string) {
 }
 
 export async function clearCart(userId: string) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const cart = await getOrCreateCart(userId);
 
   const { error } = await supabase
@@ -449,7 +449,7 @@ export async function clearCart(userId: string) {
 
 // Orders
 export async function getUserOrders(userId: string) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from('orders')
     .select(`
@@ -473,7 +473,7 @@ export async function createOrder(
     payment_method?: string;
   }
 ) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // Create order
   const { data: order, error: orderError } = await supabase
