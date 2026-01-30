@@ -2,7 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 import { getCategories } from '../../lib/supabase/queries';
 
-// Revalidate every 5 minutes
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 export const revalidate = 300;
 
 export default async function CatalogPage() {

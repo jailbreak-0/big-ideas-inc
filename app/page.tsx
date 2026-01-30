@@ -4,7 +4,8 @@ import { getProducts } from '../lib/supabase/queries';
 import HeroCarousel from '../components/HeroCarousel';
 import HomeClientSection from '@/components/HomeClientSection';
 
-// Revalidate every 5 minutes
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 export const revalidate = 300;
 
 export default async function LandingPage() {

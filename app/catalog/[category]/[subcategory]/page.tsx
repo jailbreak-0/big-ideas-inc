@@ -1,35 +1,11 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
-import { getCategoryBySlug, getSubcategoriesByCategoryServer, getProductsServer, getCategories, getSubcategoriesByCategory } from '../../../../lib/supabase/queries';
+import { getCategoryBySlug, getSubcategoriesByCategoryServer, getProductsServer } from '../../../../lib/supabase/queries';
 import SubcategoryClient from './SubcategoryClient';
 
-// Revalidate every 5 minutes
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 export const revalidate = 300;
-export const dynamicParams = true; // Allow dynamic params at runtime
-
-// Generate static params for all category/subcategory combinations
-export async function generateStaticParams() {
-    try {
-        const categories = await getCategories();
-        const params = [];
-        
-        for (const category of categories) {
-            const subcategories = await getSubcategoriesByCategory(category.id);
-            for (const subcategory of subcategories) {
-                params.push({
-                    category: category.slug,
-                    subcategory: subcategory.slug,
-                });
-            }
-        }
-        
-        return params;
-    } catch (error) {
-        console.error('Error generating static params for subcategories:', error);
-        // Return empty array to allow all params to be generated on-demand
-        return [];
-    }
-}
 
 interface PageProps {
     params: Promise<{ category: string; subcategory: string }>;
