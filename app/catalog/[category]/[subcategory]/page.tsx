@@ -1,6 +1,7 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
-import { getCategoryBySlug, getSubcategoriesByCategoryServer, getProductsServer, getCategories, getSubcategoriesByCategory } from '../../../../lib/supabase/queries';
+import { getCategoryBySlug, getSubcategoriesByCategoryServer, getProductsServer } from '../../../../lib/supabase/queries';
+import { getCategories, getSubcategoriesByCategory } from '../../../../lib/supabase/static-queries';
 import SubcategoryClient from './SubcategoryClient';
 
 // Revalidate every 5 minutes
@@ -8,7 +9,7 @@ export const revalidate = 300;
 export const dynamicParams = true; // Allow dynamic params at runtime
 
 // Generate static params for all category/subcategory combinations
-// Use client-side queries since this runs at build time without request context
+// Use static queries since this runs at build time without request context
 export async function generateStaticParams() {
     try {
         const categories = await getCategories();

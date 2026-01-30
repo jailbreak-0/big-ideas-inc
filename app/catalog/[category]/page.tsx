@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { getCategoryBySlug, getSubcategoriesByCategory, getCategories } from '../../../lib/supabase/queries';
+import { getCategories as getCategoriesStatic } from '../../../lib/supabase/static-queries';
 import { notFound } from 'next/navigation';
 
 // Revalidate every 5 minutes
@@ -8,7 +9,7 @@ export const revalidate = 300;
 
 // Generate static params for all categories
 export async function generateStaticParams() {
-    const categories = await getCategories();
+    const categories = await getCategoriesStatic();
     return categories.map((category) => ({
         category: category.slug,
     }));

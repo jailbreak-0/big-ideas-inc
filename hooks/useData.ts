@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
-import * as db from '../lib/supabase/queries';
+import * as db from '../lib/supabase/client-queries';
 
 interface UseDataOptions {
   enabled?: boolean;
