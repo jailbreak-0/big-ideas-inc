@@ -13,6 +13,8 @@ const ProductDetailPage: React.FC = () => {
     const productSlug = Array.isArray(id) ? id[0] : id;
     const { products, loading } = useData();
     const [quantity, setQuantity] = useState(1);
+    const [showAllSpecs, setShowAllSpecs] = useState(false);
+    const [isAdding, setIsAdding] = useState(false);
     
     const product = products?.find(p => p.slug === productSlug);
 
@@ -46,6 +48,23 @@ const ProductDetailPage: React.FC = () => {
         if (!category) return 'Products';
         if (Array.isArray(category)) return category[0]?.name || 'Products';
         return category.name || 'Products';
+    };
+
+    const handleAddToCart = () => {
+        setIsAdding(true);
+        addToCart({
+            id: product!.id,
+            name: product!.name,
+            price: Number(product!.price),
+            image: product!.image_url || '',
+            brand: product!.brand,
+            category: getCategoryName(product),
+            description: product!.description || '',
+            rating: Number(product!.rating),
+            reviewsCount: product!.reviews_count,
+            status: product!.status as any
+        });
+        setTimeout(() => setIsAdding(false), 1500);
     };
 
     return (
@@ -103,27 +122,25 @@ const ProductDetailPage: React.FC = () => {
                         <div className="flex flex-col gap-4">
                             <div className="flex gap-4">
                                 <div className="flex-1 flex items-center justify-between border-2 border-slate-100 dark:border-white/10 rounded-xl px-4 py-2">
-                                    <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="text-primary hover:bg-primary/10 rounded p-1"><span className="material-symbols-outlined">remove</span></button>
+                                    <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="text-primary cursor-pointer hover:bg-primary/10 rounded p-1"><span className="material-symbols-outlined">remove</span></button>
                                     <span className="font-bold">{quantity}</span>
-                                    <button onClick={() => setQuantity(q => q + 1)} className="text-primary hover:bg-primary/10 rounded p-1"><span className="material-symbols-outlined">add</span></button>
+                                    <button onClick={() => setQuantity(q => q + 1)} className="text-primary cursor-pointer hover:bg-primary/10 rounded p-1"><span className="material-symbols-outlined">add</span></button>
                                 </div>
                                 <button
-                                    onClick={() => addToCart({
-                                        id: product.id,
-                                        name: product.name,
-                                        price: Number(product.price),
-                                        image: product.image_url || '',
-                                        brand: product.brand,
-                                        category: getCategoryName(product),
-                                        description: product.description || '',
-                                        rating: Number(product.rating),
-                                        reviewsCount: product.reviews_count,
-                                        status: product.status as any
-                                    })}
-                                    className="flex-3 bg-primary text-white rounded-xl font-extrabold py-4 flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-lg shadow-primary/20"
+                                    onClick={handleAddToCart}
+                                    disabled={isAdding}
+                                    className={`flex-3 text-white cursor-pointer rounded-xl font-extrabold py-4 flex items-center justify-center gap-3 transition-all shadow-lg shadow-primary/20 ${
+                                        isAdding 
+                                            ? 'scale-95 bg-green-500' 
+                                            : 'bg-primary hover:brightness-110 hover:scale-[1.02]'
+                                    }`}
                                 >
-                                    <span className="material-symbols-outlined">shopping_cart</span>
-                                    ADD TO CART
+                                    <span className={`material-symbols-outlined transition-transform ${
+                                        isAdding ? 'animate-bounce' : ''
+                                    }`}>
+                                        {isAdding ? 'check_circle' : 'shopping_cart'}
+                                    </span>
+                                    {isAdding ? 'ADDED!' : 'ADD TO CART'}
                                 </button>
                             </div>
                         </div>
@@ -141,14 +158,27 @@ const ProductDetailPage: React.FC = () => {
                         </h3>
                         <table className="w-full text-left text-sm">
                             <tbody className="divide-y divide-slate-100 dark:divide-white/5">
-                                {Object.entries((product as any).specs).map(([key, val]) => (
-                                    <tr key={key} className="group">
-                                        <td className="py-4 font-bold text-primary w-1/3">{key}</td>
-                                        <td className="py-4 text-gray-600 dark:text-gray-300">{String(val)}</td>
-                                    </tr>
-                                ))}
+                                {Object.entries((product as any).specs)
+                                    .slice(0, showAllSpecs ? undefined : 5)
+                                    .map(([key, val]) => (
+                                        <tr key={key} className="group">
+                                            <td className="py-4 font-bold text-primary w-1/3">{key}</td>
+                                            <td className="py-4 text-gray-600 dark:text-gray-300">{String(val)}</td>
+                                        </tr>
+                                    ))}
                             </tbody>
                         </table>
+                        {Object.keys((product as any).specs).length > 5 && (
+                            <button
+                                onClick={() => setShowAllSpecs(!showAllSpecs)}
+                                className="mt-6 w-full cursor-pointer flex items-center justify-center gap-2 py-3 px-4 bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl font-semibold text-primary transition-colors"
+                            >
+                                <span>{showAllSpecs ? 'Show Less' : 'Show More'}</span>
+                                <span className="material-symbols-outlined text-[20px]">
+                                    {showAllSpecs ? 'expand_less' : 'expand_more'}
+                                </span>
+                            </button>
+                        )}
                     </div>
                 </section>
             )}

@@ -19,22 +19,24 @@ export default async function LandingPage() {
             </section>
 
             {/* Trust Bar */}
-            <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 px-4 sm:px-6 lg:px-10 py-4 sm:py-6 border-b border-[#e6f4f4] dark:border-white/5">
-                <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs font-bold uppercase tracking-wider sm:tracking-widest text-charcoal dark:text-white/60">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-2xl">verified_user</span>
-                    <span className="leading-tight">3-Year Warranty</span>
-                </div>
-                <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs font-bold uppercase tracking-wider sm:tracking-widest text-charcoal dark:text-white/60">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-2xl">local_shipping</span>
-                    <span className="leading-tight">Free Shipping GH₵1,200+</span>
-                </div>
-                <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs font-bold uppercase tracking-wider sm:tracking-widest text-charcoal dark:text-white/60">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-2xl">support_agent</span>
-                    <span className="leading-tight">Expert Tech Support</span>
-                </div>
-                <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs font-bold uppercase tracking-wider sm:tracking-widest text-charcoal dark:text-white/60">
-                    <span className="material-symbols-outlined text-primary text-lg sm:text-2xl">keyboard_return</span>
-                    <span className="leading-tight">30-Day Money Back</span>
+            <section className="px-4 sm:px-6 lg:px-10 py-4 sm:py-6 border-b border-[#e6f4f4] dark:border-white/5">
+                <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+                    <div className="flex items-center justify-center gap-2 sm:gap-3 text-[10px] sm:text-xs font-bold uppercase tracking-wider sm:tracking-widest text-charcoal dark:text-white/60">
+                        <span className="material-symbols-outlined text-primary text-lg sm:text-2xl">verified_user</span>
+                        <span className="leading-tight">3-Year Warranty</span>
+                    </div>
+                    <div className="flex items-center justify-center gap-2 sm:gap-3 text-[10px] sm:text-xs font-bold uppercase tracking-wider sm:tracking-widest text-charcoal dark:text-white/60">
+                        <span className="material-symbols-outlined text-primary text-lg sm:text-2xl">local_shipping</span>
+                        <span className="leading-tight">Free Shipping GH₵1,200+</span>
+                    </div>
+                    <div className="flex items-center justify-center gap-2 sm:gap-3 text-[10px] sm:text-xs font-bold uppercase tracking-wider sm:tracking-widest text-charcoal dark:text-white/60">
+                        <span className="material-symbols-outlined text-primary text-lg sm:text-2xl">support_agent</span>
+                        <span className="leading-tight">Expert Tech Support</span>
+                    </div>
+                    <div className="flex items-center justify-center gap-2 sm:gap-3 text-[10px] sm:text-xs font-bold uppercase tracking-wider sm:tracking-widest text-charcoal dark:text-white/60">
+                        <span className="material-symbols-outlined text-primary text-lg sm:text-2xl">keyboard_return</span>
+                        <span className="leading-tight">30-Day Money Back</span>
+                    </div>
                 </div>
             </section>
 
@@ -101,7 +103,7 @@ export default async function LandingPage() {
                                 <span className="material-symbols-outlined">call</span>
                                 Book a Consultation
                             </Link>
-                            <button className="bg-white dark:bg-white/10 border border-charcoal/10 dark:border-white/10 font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-xl hover:bg-slate-50 transition-all text-sm sm:text-base">
+                            <button className="bg-white dark:bg-white/10 border border-charcoal/10 dark:border-white/10 font-bold px-6 sm:px-8 py-3 sm:py-4 rounded-xl hover:bg-slate-900 transition-all text-sm sm:text-base">
                                 Live Chat Now
                             </button>
                         </div>

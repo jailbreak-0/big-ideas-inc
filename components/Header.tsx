@@ -165,7 +165,7 @@ const Header: React.FC = () => {
                                                     </div>
                                                     <div className="text-right">
                                                         <p className="text-sm font-bold text-charcoal dark:text-white">
-                                                            ${product.price.toLocaleString()}
+                                                            GH₵{product.price.toLocaleString()}
                                                         </p>
                                                     </div>
                                                 </button>
@@ -337,7 +337,7 @@ const Header: React.FC = () => {
                                                 </p>
                                             </div>
                                             <div className="text-xs font-bold text-charcoal dark:text-white">
-                                                ${product.price.toLocaleString()}
+                                                GH₵{product.price.toLocaleString()}
                                             </div>
                                         </button>
                                     ))}

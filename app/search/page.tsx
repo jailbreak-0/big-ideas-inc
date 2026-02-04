@@ -219,11 +219,11 @@ const SearchPageContent: React.FC = () => {
                                         {/* Price */}
                                         <div className="flex items-center gap-2">
                                             <span className="text-xl font-bold text-charcoal dark:text-white">
-                                                ${product.price.toLocaleString()}
+                                                GH₵{product.price.toLocaleString()}
                                             </span>
                                             {product.old_price && (
                                                 <span className="text-sm text-slate-400 dark:text-slate-500 line-through">
-                                                    ${product.old_price.toLocaleString()}
+                                                    GH₵{product.old_price.toLocaleString()}
                                                 </span>
                                             )}
                                         </div>

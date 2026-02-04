@@ -12,7 +12,7 @@ const CartPage: React.FC = () => {
     const total = subtotal + tax;
 
     return (
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-20 py-10">
+        <div className="max-w-350 mx-auto px-6 lg:px-20 py-10">
             <nav className="flex items-center gap-2 text-sm text-slate-500 mb-6">
                 <Link className="hover:text-primary" href="/">Home</Link>
                 <span className="material-symbols-outlined text-xs">chevron_right</span>
@@ -52,7 +52,7 @@ const CartPage: React.FC = () => {
                                             <p className="text-xs text-slate-400 mb-2">{item.product.brand}</p>
                                             <button
                                                 onClick={() => removeFromCart(item.product.id)}
-                                                className="text-xs text-slate-400 hover:text-red-500 flex items-center gap-1 transition-colors self-start"
+                                                className="text-xs text-slate-400 hover:text-red-500 cursor-pointer flex items-center gap-1 transition-colors self-start"
                                             >
                                                 <span className="material-symbols-outlined text-sm">delete</span> Remove
                                             </button>
@@ -60,16 +60,16 @@ const CartPage: React.FC = () => {
                                     </div>
                                     <div className="col-span-2 flex justify-center">
                                         <div className="flex items-center border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900">
-                                            <button onClick={() => updateQuantity(item.product.id, -1)} className="px-2 py-1 hover:text-primary"><span className="material-symbols-outlined text-sm">remove</span></button>
+                                            <button onClick={() => updateQuantity(item.product.id, -1)} className="px-2 py-1 cursor-pointer hover:text-primary"><span className="material-symbols-outlined text-sm">remove</span></button>
                                             <span className="w-8 text-center text-sm font-bold">{item.quantity}</span>
-                                            <button onClick={() => updateQuantity(item.product.id, 1)} className="px-2 py-1 hover:text-primary"><span className="material-symbols-outlined text-sm">add</span></button>
+                                            <button onClick={() => updateQuantity(item.product.id, 1)} className="px-2 py-1 cursor-pointer hover:text-primary"><span className="material-symbols-outlined text-sm">add</span></button>
                                         </div>
                                     </div>
                                     <div className="col-span-2 text-right text-sm font-medium">
-                                        ${item.product.price.toFixed(2)}
+                                        GH₵{item.product.price.toFixed(2)}
                                     </div>
                                     <div className="col-span-2 text-right text-lg font-bold text-primary">
-                                        ${(item.product.price * item.quantity).toFixed(2)}
+                                        GH₵{(item.product.price * item.quantity).toFixed(2)}
                                     </div>
                                 </div>
                             </div>
@@ -83,7 +83,7 @@ const CartPage: React.FC = () => {
                                 <div className="space-y-4 mb-6">
                                     <div className="flex justify-between text-sm">
                                         <span className="text-slate-500">Subtotal</span>
-                                        <span className="font-medium">${subtotal.toFixed(2)}</span>
+                                        <span className="font-medium">GH₵{subtotal.toFixed(2)}</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span className="text-slate-500">Shipping</span>
@@ -91,13 +91,13 @@ const CartPage: React.FC = () => {
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span className="text-slate-500">Est. Tax (15%)</span>
-                                        <span className="font-medium">${tax.toFixed(2)}</span>
+                                        <span className="font-medium">GH₵{tax.toFixed(2)}</span>
                                     </div>
                                     <div className="h-px bg-slate-100 dark:bg-slate-800 w-full my-2"></div>
                                     <div className="flex justify-between items-end">
                                         <span className="text-lg font-bold">Grand Total</span>
                                         <div className="text-right">
-                                            <p className="text-2xl font-extrabold text-primary">${total.toFixed(2)}</p>
+                                            <p className="text-2xl font-extrabold text-primary">GH₵{total.toFixed(2)}</p>
                                             <p className="text-[10px] text-slate-400">Tax included</p>
                                         </div>
                                     </div>
