@@ -61,11 +61,11 @@ export default function HomeClientSection({ featuredProducts }: HomeClientSectio
                         <Link href={`/product/${featuredProducts[0].slug}`}>
                             <h3 className="text-xl sm:text-2xl font-bold mb-2 hover:text-primary transition-colors">{featuredProducts[0].name}</h3>
                         </Link>
-                        <p className="text-charcoal/60 dark:text-white/60 text-sm mb-4 sm:mb-6">{featuredProducts[0].description}</p>
+                        <p className="text-slate-600 dark:text-slate-300 text-sm mb-4 sm:mb-6">{featuredProducts[0].description}</p>
                     </div>
                     <div className="flex items-center justify-between">
                         <div>
-                            <span className="text-charcoal/40 line-through text-sm">{formatPrice(featuredProducts[0].old_price)}</span>
+                            <span className="text-slate-600 line-through text-sm dark:text-slate-400">{formatPrice(featuredProducts[0].old_price)}</span>
                             <div className="text-2xl sm:text-3xl font-black text-primary">{formatPrice(featuredProducts[0].price)}</div>
                         </div>
                         <button
@@ -99,7 +99,7 @@ export default function HomeClientSection({ featuredProducts }: HomeClientSectio
                     <Link href={`/product/${product.slug}`}>
                         <h4 className="font-bold text-sm line-clamp-1 hover:text-primary transition-colors">{product.name}</h4>
                     </Link>
-                    <span className="text-charcoal/50 text-xs mb-3">{product.brand}</span>
+                    <span className="text-slate-600 text-xs mb-3 dark:text-slate-400">{product.brand}</span>
                     <div className="mt-auto flex justify-between items-center">
                         <span className="font-black text-lg text-primary">{formatPrice(product.price)}</span>
                         <button

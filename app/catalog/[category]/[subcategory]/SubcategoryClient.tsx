@@ -209,7 +209,7 @@ export default function SubcategoryClient({
                                                     <>
                                                         <div className="flex items-center gap-2">
                                                             <span className="text-2xl font-black tracking-tighter">{formatPrice(Number(product.price))}</span>
-                                                            <span className="text-sm text-slate-400 line-through">{formatPrice(Number(product.old_price))}</span>
+                                                            <span className="text-sm text-slate-600 line-through dark:text-slate-400">{formatPrice(Number(product.old_price))}</span>
                                                         </div>
                                                     </>
                                                 ) : (

@@ -13,7 +13,7 @@ const CartPage: React.FC = () => {
 
     return (
         <div className="max-w-350 mx-auto px-6 lg:px-20 py-10">
-            <nav className="flex items-center gap-2 text-sm text-slate-500 mb-6">
+            <nav className="flex items-center gap-2 text-sm text-slate-600 mb-6">
                 <Link className="hover:text-primary" href="/">Home</Link>
                 <span className="material-symbols-outlined text-xs">chevron_right</span>
                 <span className="text-slate-900 dark:text-slate-100 font-medium">Shopping Cart</span>
@@ -21,7 +21,7 @@ const CartPage: React.FC = () => {
 
             <div className="mb-10">
                 <h1 className="text-4xl font-extrabold tracking-tight mb-2">Your Gear Rack</h1>
-                <p className="text-slate-500">Review your components before final mastering.</p>
+                <p className="text-slate-600">Review your components before final mastering.</p>
             </div>
 
             {cartItems.length === 0 ? (
@@ -33,7 +33,7 @@ const CartPage: React.FC = () => {
             ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
                     <div className="lg:col-span-8 space-y-4">
-                        <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-500">
+                        <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-600">
                             <div className="col-span-6">Product Details</div>
                             <div className="col-span-2 text-center">Quantity</div>
                             <div className="col-span-2 text-right">Unit Price</div>
@@ -49,10 +49,10 @@ const CartPage: React.FC = () => {
                                         </div>
                                         <div className="flex flex-col justify-center">
                                             <h3 className="font-bold text-lg group-hover:text-primary transition-colors">{item.product.name}</h3>
-                                            <p className="text-xs text-slate-400 mb-2">{item.product.brand}</p>
+                                            <p className="text-xs text-slate-600 mb-2">{item.product.brand}</p>
                                             <button
                                                 onClick={() => removeFromCart(item.product.id)}
-                                                className="text-xs text-slate-400 hover:text-red-500 cursor-pointer flex items-center gap-1 transition-colors self-start"
+                                                className="text-xs text-slate-600 hover:text-red-500 cursor-pointer flex items-center gap-1 transition-colors self-start"
                                             >
                                                 <span className="material-symbols-outlined text-sm">delete</span> Remove
                                             </button>
@@ -82,15 +82,15 @@ const CartPage: React.FC = () => {
                                 <h2 className="text-xl font-extrabold mb-6">Order Summary</h2>
                                 <div className="space-y-4 mb-6">
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-slate-500">Subtotal</span>
+                                        <span className="text-slate-600">Subtotal</span>
                                         <span className="font-medium">GH₵{subtotal.toFixed(2)}</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-slate-500">Shipping</span>
+                                        <span className="text-slate-600">Shipping</span>
                                         <span className="text-emerald-500 font-bold uppercase text-xs">Free</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-slate-500">Est. Tax (15%)</span>
+                                        <span className="text-slate-600">Est. Tax (15%)</span>
                                         <span className="font-medium">GH₵{tax.toFixed(2)}</span>
                                     </div>
                                     <div className="h-px bg-slate-100 dark:bg-slate-800 w-full my-2"></div>
@@ -98,7 +98,7 @@ const CartPage: React.FC = () => {
                                         <span className="text-lg font-bold">Grand Total</span>
                                         <div className="text-right">
                                             <p className="text-2xl font-extrabold text-primary">GH₵{total.toFixed(2)}</p>
-                                            <p className="text-[10px] text-slate-400">Tax included</p>
+                                            <p className="text-[10px] text-slate-600">Tax included</p>
                                         </div>
                                     </div>
                                 </div>

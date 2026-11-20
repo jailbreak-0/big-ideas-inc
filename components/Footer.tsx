@@ -43,7 +43,7 @@ const Footer: React.FC = () => {
                     <div className="flex items-center gap-2">
                         <h1 className="text-xl font-extrabold tracking-tight dark:text-white uppercase">Big Ideas <span className="text-primary">Inc.</span></h1>
                     </div>
-                    <p className="text-charcoal/60 dark:text-white/50 max-w-sm leading-relaxed">
+                    <p className="text-slate-600 dark:text-slate-300 max-w-sm leading-relaxed">
                         Leading provider of professional musical instruments and studio equipment since 1994. Quality-tested and musician-approved.
                     </p>
                     <div className="flex gap-4">
@@ -89,7 +89,7 @@ const Footer: React.FC = () => {
                 </div>
                 <div className="space-y-6">
                     <h4 className="font-bold uppercase tracking-widest text-xs">Join our List</h4>
-                    <p className="text-xs text-charcoal/50 dark:text-white/50">Exclusive early access to new releases & deals.</p>
+                    <p className="text-xs text-slate-600 dark:text-slate-400">Exclusive early access to new releases & deals.</p>
                     <form onSubmit={handleSubscribe} className="space-y-2">
                         <div className="flex gap-2">
                             <input 
@@ -117,7 +117,7 @@ const Footer: React.FC = () => {
                 </div>
             </div>
             <div className="pt-10 border-t border-charcoal/5 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-                <p className="text-xs text-charcoal/40">© 2024 ProAudio Gear. All professional rights reserved.</p>
+                <p className="text-xs text-slate-600">© 2024 ProAudio Gear. All professional rights reserved.</p>
                 <div className="flex items-center gap-6 grayscale opacity-50">
                     <span className="text-[10px] font-black">VISA</span>
                     <span className="text-[10px] font-black">MASTERCARD</span>

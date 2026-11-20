@@ -2,14 +2,17 @@
 
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import type { User } from '@supabase/supabase-js';
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const supabase = createClient();
+
+  // Memoize the Supabase client so it isn't recreated on every render,
+  // which would cause the auth state effect to re-subscribe constantly.
+  const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
     // Get initial user
@@ -51,7 +54,8 @@ export function useAuth() {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
     router.push('/');
   };
 

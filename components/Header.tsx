@@ -12,6 +12,16 @@ const Header: React.FC = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
+    const [signOutError, setSignOutError] = useState<string | null>(null);
+    const handleSignOut = async () => {
+        setIsAccountMenuOpen(false);
+        setSignOutError(null);
+        try {
+            await signOut();
+        } catch (err) {
+            setSignOutError(err instanceof Error ? err.message : 'Failed to sign out. Please try again.');
+        }
+    };
     const [searchQuery, setSearchQuery] = useState('');
     const [showSuggestions, setShowSuggestions] = useState(false);
     const pathname = usePathname();
@@ -262,10 +272,7 @@ const Header: React.FC = () => {
                                     </div>
                                     <hr className="my-1 border-slate-100 dark:border-white/10" />
                                     <button 
-                                        onClick={() => {
-                                            setIsAccountMenuOpen(false);
-                                            signOut();
-                                        }}
+                                        onClick={handleSignOut}
                                         className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
                                     >
                                         <span className="material-symbols-outlined text-lg">logout</span>
@@ -280,6 +287,8 @@ const Header: React.FC = () => {
                             <span className="hidden sm:inline">Sign In</span>
                         </Link>
                     )}
+
+                    {signOutError && <p className="text-xs text-red-600 dark:text-red-400 font-medium">{signOutError}</p>}
 
                     {/* Cart Link */}
                     <Link href="/cart" className="flex flex-col items-center gap-0.5 sm:gap-1 relative text-charcoal dark:text-white/70 hover:text-primary transition-colors min-w-11 min-h-11 justify-center">
